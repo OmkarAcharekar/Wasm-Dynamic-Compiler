@@ -1,0 +1,9 @@
+[submodule "lib/mio"]
+	path = lib/mio
+	url = git@github.com:mandreyel/mio.git
+[submodule "lib/fmt"]
+	path = lib/fmt
+	url = git@github.com:fmtlib/fmt.git
+[submodule "lib/utfcpp"]
+	path = lib/utfcpp
+	url = git@github.com:nemtrif/utfcpp.git
