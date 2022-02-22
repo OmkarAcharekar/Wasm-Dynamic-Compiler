@@ -1,0 +1,19 @@
+Checks: '
+ -*,
+clang-analyzer-*,
+modernize-*,
+cppcoreguidelines-*,
+performance-*,
+bugprone-*,
+misc-*,
+llvm-*,
+-modernize-use-trailing-return-type,
+-modernize-use-nodiscard,
+-modernize-use-nullptr,
+-cppcoreguidelines-pro-type-union-access,
+-cppcoreguidelines-pro-type-reinterpret-cast,
+-cppcoreguidelines-owning-memory,
+-bugprone-reserved-identifier'
+ HeaderFilterRegex: '.*/src/.*'
+© 2022 GitHub,
+Inc. Terms Privacy
