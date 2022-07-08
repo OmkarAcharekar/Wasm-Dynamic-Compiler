@@ -40,5 +40,5 @@ target_link_libraries(wasm_dynamic
         range-v3
         ${llvm_libs})
 
-add_executable(sable-wasm src/Main.cc)
-target_link_libraries(sable-wasm wasm_dynamic)
+add_executable(wasm_dynamic-wasm src/Main.cc)
+target_link_libraries(wasm_dynamic-wasm wasm_dynamic)

@@ -1,5 +1,5 @@
-#ifndef SABLE_INCLUDE_GUARD_UTILITY_COMMONS
-#define SABLE_INCLUDE_GUARD_UTILITY_COMMONS
+#ifndef wasm_dynamic_INCLUDE_GUARD_UTILITY_COMMONS
+#define wasm_dynamic_INCLUDE_GUARD_UTILITY_COMMONS
 
 #include <chrono>
 #include <cstddef>
@@ -18,30 +18,42 @@
 #define ATTRIBUTE(x)
 #endif
 
-namespace utility::literals {
-constexpr std::byte operator""_byte(unsigned long long X) {
-  return static_cast<std::byte>(X);
-}
+namespace utility::literals
+{
+  constexpr std::byte operator""_byte(unsigned long long X)
+  {
+    return static_cast<std::byte>(X);
+  }
 } // namespace utility::literals
 
-namespace utility {
-[[noreturn]] inline void unreachable() {
+namespace utility
+{
+  [[noreturn]] inline void unreachable()
+  {
 #if __has_builtin(__builtin_trap)
-  __builtin_trap();
+    __builtin_trap();
 #else
-  std::abort();
+    std::abort();
 #endif
-}
-template <typename... ArgTypes> void ignore(ArgTypes &&.../* IGNORED */) {}
+  }
+  template <typename... ArgTypes>
+  void ignore(ArgTypes &&.../* IGNORED */) {}
 
-template <typename... Ts> struct Overload : Ts... { using Ts::operator()...; };
-template <typename... Ts> Overload(Ts...) -> Overload<Ts...>;
+  template <typename... Ts>
+  struct Overload : Ts...
+  {
+    using Ts::operator()...;
+  };
+  template <typename... Ts>
+  Overload(Ts...) -> Overload<Ts...>;
 
-template <typename T> auto measure(T &&Fn) {
-  auto Start = std::chrono::high_resolution_clock::now();
-  Fn();
-  auto Stop = std::chrono::high_resolution_clock::now();
-  return Stop - Start;
-}
+  template <typename T>
+  auto measure(T &&Fn)
+  {
+    auto Start = std::chrono::high_resolution_clock::now();
+    Fn();
+    auto Stop = std::chrono::high_resolution_clock::now();
+    return Stop - Start;
+  }
 } // namespace utility
 #endif

@@ -1,4 +1,4 @@
-#ifndef SABLE_SKIP_SECTION_EVENTS
+#ifndef wasm_dynamic_SKIP_SECTION_EVENTS
 X(enterTypeSection       , (1, ((SizeType, Size))))
 X(onTypeSectionEntry     , (2, ((SizeType, Index), (bytecode::FunctionType, Type))))
 X(enterImportSection     , (1, ((SizeType, Size))))
@@ -26,7 +26,7 @@ X(onDataSectionEntry     , (3, ((SizeType, Index), (bytecode::MemIDX, Memory), (
 X(enterExpression        , (0, ()))
 X(exitExpression         , (0, ()))
 
-#ifndef SABLE_SKIP_CONTROL_INSTRUCTION_EVENTS
+#ifndef wasm_dynamic_SKIP_CONTROL_INSTRUCTION_EVENTS
 X(onInstUnreachable      , (0, ()))
 X(onInstNop              , (0, ()))
 X(enterInstBlock         , (1, ((bytecode::BlockResultType, Type))))
@@ -44,12 +44,12 @@ X(onInstCall             , (1, ((bytecode::FuncIDX, Target))))
 X(onInstCallIndirect     , (1, ((bytecode::TypeIDX, Type))))
 #endif
 
-#ifndef SABLE_SKIP_PARAMETRIC_INSTRUCTION_EVENTS
+#ifndef wasm_dynamic_SKIP_PARAMETRIC_INSTRUCTION_EVENTS
 X(onInstDrop             , (0, ()))
 X(onInstSelect           , (0, ()))
 #endif
 
-#ifndef SABLE_SKIP_VARIABLE_INSTRUCTION_EVENTS
+#ifndef wasm_dynamic_SKIP_VARIABLE_INSTRUCTION_EVENTS
 X(onInstLocalGet         , (1, ((bytecode::LocalIDX, Target))))
 X(onInstLocalSet         , (1, ((bytecode::LocalIDX, Target))))
 X(onInstLocalTee         , (1, ((bytecode::LocalIDX, Target))))
@@ -57,7 +57,7 @@ X(onInstGlobalGet        , (1, ((bytecode::GlobalIDX, Target))))
 X(onInstGlobalSet        , (1, ((bytecode::GlobalIDX, Target))))
 #endif
 
-#ifndef SABLE_SKIP_MEMORY_INSTRUCTION_EVENTS
+#ifndef wasm_dynamic_SKIP_MEMORY_INSTRUCTION_EVENTS
 X(onInstI32Load          , (2, ((std::uint32_t, Align), (std::uint32_t, Offset))))
 X(onInstI64Load          , (2, ((std::uint32_t, Align), (std::uint32_t, Offset))))
 X(onInstF32Load          , (2, ((std::uint32_t, Align), (std::uint32_t, Offset))))
@@ -85,7 +85,7 @@ X(onInstMemorySize       , (0, ()))
 X(onInstMemoryGrow       , (0, ()))
 #endif
 
-#ifndef SABLE_SKIP_NUMERIC_INSTRUCTION_EVENT
+#ifndef wasm_dynamic_SKIP_NUMERIC_INSTRUCTION_EVENT
 X(onInstI32Const         , (1, ((std::int32_t, Value))))
 X(onInstI64Const         , (1, ((std::int64_t, Value))))
 X(onInstF32Const         , (1, ((float, Value))))
@@ -224,7 +224,7 @@ X(onInstF32ReinterpretI32, (0, ()))
 X(onInstF64ReinterpretI64, (0, ()))
 #endif
 
-#ifndef SABLE_SKIP_SIGN_EXTENSION_OPS_INSTRUCTION_EVENTS
+#ifndef wasm_dynamic_SKIP_SIGN_EXTENSION_OPS_INSTRUCTION_EVENTS
 X(onInstI32Extend8S      , (0, ()))
 X(onInstI32Extend16S     , (0, ()))
 X(onInstI64Extend8S      , (0, ()))
@@ -232,7 +232,7 @@ X(onInstI64Extend16S     , (0, ()))
 X(onInstI64Extend32S     , (0, ()))
 #endif
 
-#ifndef SABLE_SKIP_NONTRAPPING_FLOAT_TO_INT_CONVS_INSTRUCTION_EVENTS
+#ifndef wasm_dynamic_SKIP_NONTRAPPING_FLOAT_TO_INT_CONVS_INSTRUCTION_EVENTS
 X(onInstI32TruncSatF32S  , (0, ()))
 X(onInstI32TruncSatF32U  , (0, ()))
 X(onInstI32TruncSatF64S  , (0, ()))

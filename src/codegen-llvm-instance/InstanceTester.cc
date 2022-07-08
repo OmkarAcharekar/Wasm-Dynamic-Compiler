@@ -8,19 +8,23 @@
 #include <limits>
 #include <vector>
 
-struct ImportDescriptor {
+struct ImportDescriptor
+{
   std::uint32_t Index;
   char const *ModuleName;
   char const *EntityName;
 };
 
-struct ExportDescriptor {
+struct ExportDescriptor
+{
   std::uint32_t Index;
   char const *Name;
 };
 
-struct MemoryMetadata {
-  struct MemoryType {
+struct MemoryMetadata
+{
+  struct MemoryType
+  {
     std::uint32_t Min;
     std::uint32_t Max;
   };
@@ -33,7 +37,8 @@ struct MemoryMetadata {
   auto exports() const { return ranges::subrange(Exports, Exports + ESize); }
 };
 
-struct FunctionMetadata {
+struct FunctionMetadata
+{
   using FunctionType = char const *;
   std::uint32_t Size, ISize, ESize;
   FunctionType const *Entities;
@@ -44,78 +49,103 @@ struct FunctionMetadata {
   auto exports() const { return ranges::subrange(Exports, Exports + ESize); }
 };
 
-bytecode::ValueType convert(char TypeChar) {
-  switch (toupper(TypeChar)) {
-  case 'I': return bytecode::valuetypes::I32;
-  case 'J': return bytecode::valuetypes::I64;
-  case 'F': return bytecode::valuetypes::F32;
-  case 'D': return bytecode::valuetypes::F64;
-  default: utility::unreachable();
+bytecode::ValueType convert(char TypeChar)
+{
+  switch (toupper(TypeChar))
+  {
+  case 'I':
+    return bytecode::valuetypes::I32;
+  case 'J':
+    return bytecode::valuetypes::I64;
+  case 'F':
+    return bytecode::valuetypes::F32;
+  case 'D':
+    return bytecode::valuetypes::F64;
+  default:
+    utility::unreachable();
   }
 }
 
-bytecode::FunctionType convert(char const *TypeString) {
+bytecode::FunctionType convert(char const *TypeString)
+{
   std::vector<bytecode::ValueType> ParamTypes;
   std::vector<bytecode::ValueType> ResultTypes;
   bool SeenSeparator = false;
-  for (char const *I = TypeString; *I != '\0'; ++I) {
-    if (*I == ':') {
-      if (SeenSeparator) utility::unreachable();
+  for (char const *I = TypeString; *I != '\0'; ++I)
+  {
+    if (*I == ':')
+    {
+      if (SeenSeparator)
+        utility::unreachable();
       SeenSeparator = true;
       continue;
     }
     auto ValueType = convert(*I);
-    if (!SeenSeparator) {
+    if (!SeenSeparator)
+    {
       ParamTypes.push_back(ValueType);
-    } else {
+    }
+    else
+    {
       ResultTypes.push_back(ValueType);
     }
   }
   return bytecode::FunctionType(std::move(ParamTypes), std::move(ResultTypes));
 }
 
-extern "C" {
-extern MemoryMetadata const __sable_memory_metadata;
-extern FunctionMetadata const __sable_function_metadata;
+extern "C"
+{
+  extern MemoryMetadata const __wasm_dynamic_memory_metadata;
+  extern FunctionMetadata const __wasm_dynamic_function_metadata;
 
-void __sable_initialize(void *);
+  void __wasm_dynamic_initialize(void *);
 
-void __sable_memory_guard(void *, std::uint32_t) {}
-void __sable_table_guard(void *, std::uint32_t) {}
-void *__sable_table_get(void *, std::uint32_t, char const *) { return nullptr; }
-void __sable_table_set(
-    void *Table[], std::uint32_t Offset, std::uint32_t Length, void *Ptrs[],
-    char const *TypeStrings[]) {
-  for (std::uint32_t I = 0; I < Length; ++I) {
-    Table[Offset + I] = Ptrs[I];
-    fmt::print("Table Set: {}\n", TypeStrings[I]);
+  void __wasm_dynamic_memory_guard(void *, std::uint32_t) {}
+  void __wasm_dynamic_table_guard(void *, std::uint32_t) {}
+  void *__wasm_dynamic_table_get(void *, std::uint32_t, char const *) { return nullptr; }
+  void __wasm_dynamic_table_set(
+      void *Table[], std::uint32_t Offset, std::uint32_t Length, void *Ptrs[],
+      char const *TypeStrings[])
+  {
+    for (std::uint32_t I = 0; I < Length; ++I)
+    {
+      Table[Offset + I] = Ptrs[I];
+      fmt::print("Table Set: {}\n", TypeStrings[I]);
+    }
   }
-}
-void __sable_unreachable() { throw std::runtime_error("unreachable"); }
+  void __wasm_dynamic_unreachable() { throw std::runtime_error("unreachable"); }
 }
 
-namespace fmt {
-template <> struct formatter<MemoryMetadata::MemoryType> {
-  template <typename C> auto parse(C &&CTX) { return CTX.begin(); }
-  template <typename C>
-  auto format(MemoryMetadata::MemoryType const &Type, C &&CTX) {
-    if (Type.Max == std::numeric_limits<std::uint32_t>::max())
-      return fmt::format_to(CTX.out(), "{{min {}}}", Type.Min);
-    return fmt::format_to(CTX.out(), "{{min {}, max{}}}", Type.Min, Type.Max);
-  }
-};
+namespace fmt
+{
+  template <>
+  struct formatter<MemoryMetadata::MemoryType>
+  {
+    template <typename C>
+    auto parse(C &&CTX) { return CTX.begin(); }
+    template <typename C>
+    auto format(MemoryMetadata::MemoryType const &Type, C &&CTX)
+    {
+      if (Type.Max == std::numeric_limits<std::uint32_t>::max())
+        return fmt::format_to(CTX.out(), "{{min {}}}", Type.Min);
+      return fmt::format_to(CTX.out(), "{{min {}, max{}}}", Type.Min, Type.Max);
+    }
+  };
 } // namespace fmt
 
-int main(int argc, char const *argv[]) {
+int main(int argc, char const *argv[])
+{
   utility::ignore(argc);
   utility::ignore(argv);
 
-  for (auto const &Export : __sable_memory_metadata.exports()) {
-    auto const &Type = __sable_memory_metadata[Export.Index];
+  for (auto const &Export : __wasm_dynamic_memory_metadata.exports())
+  {
+    auto const &Type = __wasm_dynamic_memory_metadata[Export.Index];
     fmt::print("{} :: {}\n", Export.Name, Type);
   }
-  for (auto const &Import : __sable_function_metadata.imports()) {
-    auto Type = convert(__sable_function_metadata[Import.Index]);
+  for (auto const &Import : __wasm_dynamic_function_metadata.imports())
+  {
+    auto Type = convert(__wasm_dynamic_function_metadata[Import.Index]);
     fmt::print("{}::{} :: {}\n", Import.ModuleName, Import.EntityName, Type);
   }
 
@@ -129,7 +159,7 @@ int main(int argc, char const *argv[]) {
   Instance[7] = &b;
   Instance[8] = &c;
   Instance[10] = nullptr;
-  __sable_initialize(Instance);
+  __wasm_dynamic_initialize(Instance);
   fmt::print("string: {}\n", &memory[1024]);
 
   fmt::print("{}\n{}\n{}\n", a, b, c);
